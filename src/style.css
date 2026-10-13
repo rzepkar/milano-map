@@ -1,0 +1,580 @@
+/* Milano, meine Orte
+   Nebelgrau als Grund, Metro-Farben als Kategorien, Archivo (Signaletik-Grotesk) als Schrift.
+   Auffälligstes Element: der Marker als Metro-Rondell mit der eigenen Sternezahl. */
+
+:root {
+  --font: 'Archivo Variable', system-ui, sans-serif;
+  --nebbia: #e9ecee;
+  --panel: rgb(255 255 255 / 0.92);
+  --ink: #17202b;
+  --ink-2: #566170;
+  --line: rgb(23 32 43 / 0.13);
+  --star: #f2a900;
+  --star-off: rgb(23 32 43 / 0.17);
+  --focus: #0f5fd8;
+  --shadow: 0 1px 2px rgb(16 22 29 / 0.08), 0 10px 28px -10px rgb(16 22 29 / 0.32);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nebbia: #10161d;
+    --panel: rgb(22 28 36 / 0.92);
+    --ink: #eef1f4;
+    --ink-2: #9aa6b2;
+    --line: rgb(255 255 255 / 0.15);
+    --star-off: rgb(255 255 255 / 0.2);
+    --focus: #6ea8ff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -10px rgb(0 0 0 / 0.7);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--nebbia);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+#map {
+  position: fixed;
+  inset: 0;
+}
+
+button,
+input,
+a {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------ Kopfleiste */
+
+.topbar {
+  position: fixed;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: calc(10px + var(--safe-top)) 12px 0;
+  pointer-events: none;
+}
+
+.topbar > * {
+  pointer-events: auto;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px 0 14px;
+  gap: 10px;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+.search-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--ink-2);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 16px; /* verhindert Zoom beim Fokussieren auf iOS */
+  outline: none;
+  appearance: none;
+}
+
+.search input::placeholder {
+  color: var(--ink-2);
+}
+
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.count {
+  flex: none;
+  font-size: 13px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  max-height: 50dvh;
+  margin: 0;
+  padding: 6px;
+  overflow: auto;
+  list-style: none;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.result:hover {
+  background: var(--line);
+}
+
+.result-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.result-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-cat {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.result-empty {
+  padding: 12px 10px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------ Filter-Chips */
+
+.chips {
+  display: flex;
+  gap: 6px;
+  padding: 2px 2px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 13px;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.chip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--c);
+  border-color: transparent;
+  color: #fff;
+}
+
+.chip[aria-pressed='true'] .chip-dot {
+  background: #fff;
+}
+
+.chip-sep {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--line);
+}
+
+.chip-star {
+  gap: 5px;
+  padding: 0 12px 0 10px;
+}
+
+.chip-star .star-icon {
+  color: var(--star);
+}
+
+.chip-star[aria-pressed='true'] {
+  background: var(--star);
+  color: #17202b;
+}
+
+.chip-star[aria-pressed='true'] .star-icon {
+  color: #17202b;
+}
+
+/* ------------------------------------------------------------ Sterne & Rondell */
+
+.star-icon {
+  display: inline-flex;
+}
+
+.star-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.roundel {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 1px var(--line), 0 2px 6px rgb(0 0 0 / 0.2);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.roundel-lg {
+  width: 48px;
+  height: 48px;
+  border-width: 3px;
+  font-size: 20px;
+}
+
+.stars {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.stars-row {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--star-off);
+}
+
+.stars-row .star-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.stars-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--v) / 5 * 100%);
+  overflow: hidden;
+  color: var(--star);
+}
+
+.stars-fill .star-icon {
+  flex: none;
+}
+
+/* ------------------------------------------------------------ Detailansicht */
+
+.sheet {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 68dvh;
+  overflow: auto;
+  padding: 0 20px calc(20px + var(--safe-bottom));
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid var(--line);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 40px -12px rgb(16 22 29 / 0.4);
+  transform: translateY(calc(100% + 24px));
+  visibility: hidden;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s 0.3s;
+}
+
+.sheet.open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+}
+
+.grab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 24px;
+  margin: 0 -20px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.grab::before {
+  content: '';
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ink-2);
+  opacity: 0.45;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--line);
+}
+
+.close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 40px;
+}
+
+.sheet-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  font-stretch: 112%;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.sheet-cat {
+  margin: 3px 0 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.rating-text {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet-note {
+  max-width: 60ch;
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.sheet-meta {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--nebbia);
+}
+
+/* ------------------------------------------------------------ Hinweis */
+
+.toast {
+  position: fixed;
+  z-index: 20;
+  left: 50%;
+  bottom: calc(28px + var(--safe-bottom));
+  max-width: min(92vw, 420px);
+  padding: 11px 16px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--nebbia);
+  font-size: 14px;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ------------------------------------------------------------ MapLibre-Steuerelemente */
+
+.maplibregl-ctrl-group {
+  background: var(--panel);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.maplibregl-ctrl-group button {
+  width: 44px;
+  height: 44px;
+}
+
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  background: var(--panel);
+  color: var(--ink-2);
+}
+
+.maplibregl-ctrl-attrib a {
+  color: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .maplibregl-ctrl-icon,
+  .maplibregl-ctrl-attrib-button {
+    filter: invert(1);
+  }
+}
+
+/* ------------------------------------------------------------ Desktop */
+
+@media (min-width: 720px) {
+  .topbar {
+    right: auto;
+    width: 392px;
+    padding: calc(16px + var(--safe-top)) 16px 0;
+  }
+
+  .sheet {
+    left: 16px;
+    right: auto;
+    bottom: 16px;
+    width: 360px;
+    max-height: calc(100dvh - 160px);
+    padding-top: 20px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .grab {
+    display: none;
+  }
+
+  .close {
+    top: 12px;
+    right: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .sheet.open,
+  .toast,
+  .chip {
+    transition: none;
+  }
+}

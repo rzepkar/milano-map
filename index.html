@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#E9ECEE" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#10161D" media="(prefers-color-scheme: dark)" />
+    <title>Milano, meine Orte</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="map" aria-label="Karte von Mailand"></div>
+
+    <header class="topbar">
+      <div class="search">
+        <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <input id="search" type="search" placeholder="Ort suchen" autocomplete="off" enterkeyhint="search" aria-label="Ort suchen" />
+        <output id="count" class="count" aria-live="polite"></output>
+        <ul id="results" class="results" hidden></ul>
+      </div>
+      <div id="chips" class="chips" role="group" aria-label="Filter"></div>
+    </header>
+
+    <aside id="sheet" class="sheet" aria-live="polite" hidden></aside>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1919, 45.4641] },
+      "properties": {
+        "name": "Duomo di Milano",
+        "kategorie": "sehenswuerdigkeit",
+        "sterne": 4,
+        "notiz": "Auf das Dach steigen, am späten Nachmittag ist das Licht am besten.",
+        "datum": "2026-09-27",
+        "url": "https://www.duomomilano.it",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1795, 45.4705] },
+      "properties": {
+        "name": "Castello Sforzesco",
+        "kategorie": "sehenswuerdigkeit",
+        "sterne": 4.5,
+        "notiz": "Innenhöfe kostenlos, danach durch den Parco Sempione weiter.",
+        "datum": "2026-09-28",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1727, 45.4724] },
+      "properties": {
+        "name": "Parco Sempione",
+        "kategorie": "park",
+        "sterne": 5,
+        "notiz": "Gut für eine Pause zwischen Castello und Arco della Pace.",
+        "datum": "2026-09-28",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1914, 45.4871] },
+      "properties": {
+        "name": "Bosco Verticale",
+        "kategorie": "sehenswuerdigkeit",
+        "sterne": 4,
+        "notiz": "Von der Piazza Gae Aulenti aus am besten zu sehen.",
+        "datum": "2026-10-03",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1887, 45.4645] },
+      "properties": {
+        "name": "Luini",
+        "kategorie": "restaurant",
+        "sterne": 5,
+        "notiz": "Panzerotti zum Mitnehmen, mittags lange Schlange.",
+        "datum": "2026-09-30",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1832, 45.4617] },
+      "properties": {
+        "name": "Trattoria Milanese",
+        "kategorie": "restaurant",
+        "sterne": 3.5,
+        "notiz": "Risotto alla milanese und Cotoletta, klassisch und solide.",
+        "datum": "2026-10-04",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1856, 45.4656] },
+      "properties": {
+        "name": "Pasticceria Marchesi 1824",
+        "kategorie": "cafe",
+        "sterne": 4,
+        "notiz": "Kaffee und Gebäck an der Theke im Stehen.",
+        "datum": "2026-10-01",
+        "beispiel": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [9.1803, 45.4538] },
+      "properties": {
+        "name": "Darsena und Navigli",
+        "kategorie": "bar",
+        "sterne": 4,
+        "notiz": "Aperitivo am Kanal, abends sehr voll.",
+        "datum": "2026-10-05",
+        "beispiel": true
+      }
+    }
+  ]
+}
