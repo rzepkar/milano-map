@@ -25,6 +25,7 @@
 { "type": "Feature", "properties": { "name": "Dassie Gelato", "kategorie": "gelato", "sterne": 4.96, "notiz": "the best gelato chain in the world", "datum": null, "url": null, "beispiel": false }, "geometry": { "type": "Point", "coordinates": [ 9.183097464546583, 45.472006171074867 ] } },
 { "type": "Feature", "properties": { "name": "Venchi", "kategorie": "gelato", "sterne": 4.09, "notiz": "small, sweeet", "datum": null, "url": null, "beispiel": false }, "geometry": { "type": "Point", "coordinates": [ 9.184722845640479, 45.466181558149493 ] } },
 { "type": "Feature", "properties": { "name": "Artico Gelateria Citta Studi", "kategorie": "gelato", "sterne": 4.45, "notiz": "6 types of choco :ooooo", "datum": null, "url": null, "beispiel": false }, "geometry": { "type": "Point", "coordinates": [ 9.226724233822866, 45.481600635589551 ] } },
-{ "type": "Feature", "properties": { "name": "Pasticceria Anna Bakery", "kategorie": "dolce", "sterne": 4.03, "notiz": "crazy amount of toogoodtogo !!", "datum": null, "url": null, "beispiel": false }, "geometry": { "type": "Point", "coordinates": [ 9.241012334850808, 45.4831817182233 ] } }
+{ "type": "Feature", "properties": { "name": "Pasticceria Anna Bakery", "kategorie": "dolce", "sterne": 4.03, "notiz": "crazy amount of toogoodtogo !!", "datum": null, "url": null, "beispiel": false }, "geometry": { "type": "Point", "coordinates": [ 9.241012334850808, 45.4831817182233 ] } },
+{ "type": "Feature", "properties": { "name": "cioccolata italiani", "kategorie": "dolce", "sterne": 4.92, "notiz": "crepes in a cone, gelato, very good tiramisuuu!", "datum": null, "url": null, "beispiel": false }, "geometry": { "type": "Point", "coordinates": [ 9.191329426964055, 45.465786143017461 ] } }
 ]
 }
