@@ -12,7 +12,7 @@ import {
 // MapLibre 6 sucht seinen Worker relativ zum Bundle. Mit Vite (Dev wie Build) liegt er dort nicht,
 // deshalb wird er hier explizit als Asset eingebunden.
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
-import type { GeoJSONSource, MapGeoJSONFeature } from 'maplibre-gl';
+import type { GeoJSONSource } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import type { Feature, FeatureCollection, Point } from 'geojson';
 
@@ -200,36 +200,6 @@ function setupPoiLayers() {
   map.addSource('pois', {
     type: 'geojson',
     data: collection(visiblePois()),
-    cluster: true,
-    clusterRadius: 44,
-    clusterMaxZoom: 14,
-  });
-
-  map.addLayer({
-    id: 'poi-clusters',
-    type: 'circle',
-    source: 'pois',
-    filter: ['has', 'point_count'],
-    paint: {
-      'circle-color': '#17202B',
-      'circle-radius': ['step', ['get', 'point_count'], 16, 10, 20, 50, 26],
-      'circle-stroke-width': 2.5,
-      'circle-stroke-color': '#FFFFFF',
-    },
-  });
-
-  map.addLayer({
-    id: 'poi-cluster-count',
-    type: 'symbol',
-    source: 'pois',
-    filter: ['has', 'point_count'],
-    layout: {
-      'text-field': ['get', 'point_count_abbreviated'],
-      'text-font': ['Noto Sans Medium'],
-      'text-size': 13,
-      'text-allow-overlap': true,
-    },
-    paint: { 'text-color': '#FFFFFF' },
   });
 
   // Halo um den ausgewählten Ort.
@@ -249,7 +219,8 @@ function setupPoiLayers() {
     id: 'poi-points',
     type: 'circle',
     source: 'pois',
-    filter: ['!', ['has', 'point_count']],
+    // Bei dichten Punkten liegt der besser bewertete Ort oben.
+    layout: { 'circle-sort-key': ['coalesce', ['get', 'sterne'], 0] },
     paint: {
       'circle-color': colorExpression() as never,
       'circle-radius': [
@@ -274,8 +245,8 @@ function setupPoiLayers() {
     type: 'symbol',
     source: 'pois',
     minzoom: 12,
-    filter: ['!', ['has', 'point_count']],
     layout: {
+      'symbol-sort-key': ['coalesce', ['get', 'sterne'], 0],
       'text-field': ['to-string', ['coalesce', ['get', 'sterne'], '']],
       'text-font': ['Noto Sans Medium'],
       'text-size': ['interpolate', ['linear'], ['zoom'], 12, 9, 14, 13, 18, 17],
@@ -289,21 +260,8 @@ function setupPoiLayers() {
 
 map.on('style.load', setupPoiLayers);
 
-for (const layer of ['poi-points', 'poi-clusters']) {
-  map.on('mouseenter', layer, () => (map.getCanvas().style.cursor = 'pointer'));
-  map.on('mouseleave', layer, () => (map.getCanvas().style.cursor = ''));
-}
-
-async function zoomIntoCluster(feature: MapGeoJSONFeature) {
-  const source = map.getSource('pois') as GeoJSONSource | undefined;
-  const clusterId = feature.properties?.cluster_id as number | undefined;
-  if (!source || clusterId === undefined) return;
-  const zoom = await source.getClusterExpansionZoom(clusterId);
-  map.easeTo({
-    center: (feature.geometry as Point).coordinates as [number, number],
-    zoom: zoom + 0.2,
-  });
-}
+map.on('mouseenter', 'poi-points', () => (map.getCanvas().style.cursor = 'pointer'));
+map.on('mouseleave', 'poi-points', () => (map.getCanvas().style.cursor = ''));
 
 map.on('click', (e) => {
   if (!map.getLayer('poi-points')) return;
@@ -312,13 +270,9 @@ map.on('click', (e) => {
     [e.point.x - 10, e.point.y - 10],
     [e.point.x + 10, e.point.y + 10],
   ];
-  const hit = map.queryRenderedFeatures(box, { layers: ['poi-clusters', 'poi-points'] })[0];
+  const hit = map.queryRenderedFeatures(box, { layers: ['poi-points'] })[0];
   if (!hit) {
     closeSheet();
-    return;
-  }
-  if (hit.layer.id === 'poi-clusters') {
-    void zoomIntoCluster(hit);
     return;
   }
   const id = hit.properties?.id;
