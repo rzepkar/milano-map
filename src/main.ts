@@ -536,7 +536,7 @@ async function loadPois() {
         properties: {
           id: String(raw.id ?? i),
           name: raw.name as string,
-          kategorie: isKategorie(raw.kategorie) ? raw.kategorie : 'sonstiges',
+          kategorie: isKategorie(raw.kategorie) ? raw.kategorie : 'other',
           sterne,
           notiz: typeof raw.notiz === 'string' ? raw.notiz : undefined,
           datum: typeof raw.datum === 'string' ? raw.datum : undefined,
